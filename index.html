@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>⚡ Thermodynamics: Quick Formula Bento Cheat Sheet</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- KaTeX for Crisp Math Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.3); }
+    ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.5); border-radius: 9999px; }
+
+    /* Formula Row Styling */
+    .f-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.3rem 0.45rem;
+      border-radius: 0.375rem;
+      border-bottom: 1px dashed rgba(148, 163, 184, 0.16);
+    }
+    .f-row:last-child { border-bottom: none; }
+    .f-row:hover { background: rgba(99, 102, 241, 0.06); }
+
+    /* Highlighted Pill Formula */
+    .math-val {
+      transition: filter 0.18s ease, background-color 0.18s ease;
+      border-radius: 0.25rem;
+      padding: 0.05rem 0.2rem;
+    }
+
+    /* Recall Mode (Blur Formulas until clicked) */
+    body.recall-mode .math-val {
+      cursor: pointer;
+    }
+    body.recall-mode .math-val:not(.revealed) {
+      filter: blur(6px);
+      background: rgba(99, 102, 241, 0.14);
+      user-select: none;
+    }
+    body.recall-mode .math-val:not(.revealed):hover {
+      filter: blur(4px);
+      background: rgba(99, 102, 241, 0.24);
+    }
+
+    /* Ultra-Compact Mode */
+    body.ultra-compact main {
+      padding-top: 0.5rem !important;
+      padding-bottom: 0.5rem !important;
+      gap: 0.5rem !important;
+    }
+    body.ultra-compact .bento-grid {
+      gap: 0.5rem !important;
+    }
+    body.ultra-compact .bento-card {
+      padding: 0.5rem 0.65rem !important;
+    }
+    body.ultra-compact .f-row {
+      padding: 0.15rem 0.3rem !important;
+      font-size: 0.72rem !important;
+    }
+    body.ultra-compact table th,
+    body.ultra-compact table td {
+      padding: 0.22rem 0.35rem !important;
+      font-size: 0.7rem !important;
+    }
+
+    /* KaTeX Tweaks for Compact Fit */
+    .katex { font-size: 1.02em !important; }
+
+    /* Print-Ready 2-Page Cheat Sheet Styles */
+    @media print {
+      @page { margin: 8mm; size: A4 landscape; }
+      .no-print { display: none !important; }
+      html, body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        font-size: 10pt !important;
+      }
+      .bento-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        background: #ffffff !important;
+        border: 1px solid #94a3b8 !important;
+        box-shadow: none !important;
+      }
+      .math-val { filter: none !important; }
+      table, th, td { border-color: #cbd5e1 !important; color: #0f172a !important; }
+    }
+  </style>
+</head>
+
+<body class="bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-150 min-h-screen text-xs selection:bg-indigo-500 selection:text-white">
+
+  <!-- ===================================================================== -->
+  <!-- STICKY INTERACTIVE TOP BAR                                            -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 no-print">
+    <div class="max-w-[1600px] mx-auto px-3 py-2 flex flex-wrap items-center justify-between gap-2">
+      
+      <!-- Brand / Title -->
+      <div class="flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-indigo-600 text-white font-extrabold flex items-center justify-center text-xs shadow-sm">
+          ∑F
+        </span>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="font-extrabold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white">
+              Thermodynamics Quick Formula Sheet
+            </h1>
+            <span class="hidden sm:inline-block text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30">
+              1-Page Bento • Physics ($Q = \Delta U + W$)
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Controls -->
+      <div class="flex flex-wrap items-center gap-1.5">
+        <!-- 1. Instant Filter -->
+        <div class="relative w-40 sm:w-52">
+          <svg class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Filter (e.g. Mayer, COP, x)..."
+            oninput="filterSheet(this.value)"
+            class="w-full pl-7 pr-6 py-1 text-xs rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-slate-800 dark:text-slate-100"
+          />
+          <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200">✕</button>
+        </div>
+
+        <!-- 2. Recall Mode (Blur Formulas) -->
+        <button id="recallBtn" onclick="toggleRecallMode()" class="px-2.5 py-1 rounded-lg font-semibold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-indigo-500 transition flex items-center gap-1">
+          <span>🧠</span> <span>Recall Mode</span>
+        </button>
+
+        <button id="resetRecallBtn" onclick="resetReveals()" class="hidden px-2 py-1 rounded-lg font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 hover:bg-amber-500/25 transition">
+          🔄 Re-Blur
+        </button>
+
+        <!-- 3. Ultra-Compact Toggle -->
+        <button id="compactBtn" onclick="toggleCompactMode()" class="px-2.5 py-1 rounded-lg font-semibold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-indigo-500 transition flex items-center gap-1">
+          <span>📐</span> <span>Ultra-Compact</span>
+        </button>
+
+        <!-- 4. Dark / Light Toggle -->
+        <button onclick="toggleTheme()" class="px-2.5 py-1 rounded-lg font-semibold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-indigo-500 transition" title="Toggle Dark/Light Mode">
+          <span class="dark:hidden">🌙 Dark</span>
+          <span class="hidden dark:inline">☀️ Light</span>
+        </button>
+
+        <!-- 5. Print / PDF -->
+        <button onclick="window.print()" class="px-2.5 py-1 rounded-lg font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition flex items-center gap-1 shadow-sm">
+          <span>🖨️</span> <span class="hidden sm:inline">Print / PDF</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- MAIN BENTO CHEAT SHEET GRID                                           -->
+  <!-- ===================================================================== -->
+  <main class="max-w-[1600px] mx-auto p-2.5 sm:p-4 space-y-3">
+
+    <!-- TOP BENTO ROW: CARDS 1, 2, 3, 4 -->
+    <div class="bento-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+
+      <!-- ================================================================= -->
+      <!-- CARD 1: 1st Law (FLOT), Work (W), Internal Energy (ΔU) & Heat (Q) -->
+      <!-- ================================================================= -->
+      <section class="bento-card rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-1.5 mb-1.5">
+            <span class="font-extrabold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider text-[11px]">
+              1. FLOT, Work ($W$), $\Delta U$ &amp; Heat ($Q$)
+            </span>
+            <span class="text-[10px] font-mono text-slate-400">Pg 1–4</span>
+          </div>
+
+          <div class="space-y-0.5">
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">1st Law (LOCE)</span>
+              <span class="math-val font-bold text-indigo-600 dark:text-indigo-300" onclick="revealOne(this)">$Q = \Delta U + W \;\;|\;\; dQ = dU + dW$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Work (Path Fn)</span>
+              <span class="math-val" onclick="revealOne(this)">$dW = P\,dV \implies W = \int_{V_i}^{V_f} P\,dV = \text{Area}(P\text{-}V)$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Sign of $W$</span>
+              <span class="math-val" onclick="revealOne(this)">$\text{Exp }(\Delta V>0): +W \;\;|\;\; \text{Comp }(\Delta V<0): -W$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Cyclic ($\Delta U=0$)</span>
+              <span class="math-val" onclick="revealOne(this)">$Q = W = \text{Loop Area } (\text{CW: } +A, \text{ ACW: } -A)$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Free Expansion</span>
+              <span class="math-val font-semibold text-amber-600 dark:text-amber-400" onclick="revealOne(this)">$\text{Vacuum } (P_{\text{ext}}=0) \implies W = 0$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Internal Energy</span>
+              <span class="math-val" onclick="revealOne(this)">$U = \frac{f}{2}nRT = \frac{f}{2}PV \quad (\text{State Fn})$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">$\Delta U$ (All Proc.)</span>
+              <span class="math-val font-bold text-emerald-600 dark:text-emerald-400" onclick="revealOne(this)">$\Delta U = nC_V\Delta T = \frac{f}{2}nR\Delta T = \frac{f}{2}\Delta(PV)$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Sign of $\Delta U$</span>
+              <span class="math-val" onclick="revealOne(this)">$\Delta T>0 \implies +\Delta U \;\;|\;\; \Delta T<0 \implies -\Delta U$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Molar Heat ($C$)</span>
+              <span class="math-val" onclick="revealOne(this)">$Q = nC\Delta T \implies C = \frac{Q}{n\Delta T} \in (-\infty, \infty)$</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-2 pt-1.5 border-t border-slate-200 dark:border-slate-800 flex flex-wrap justify-between gap-1 text-[10px] text-slate-500 dark:text-slate-400">
+          <span><strong>State:</strong> $P,V,T,U,S$</span>
+          <span><strong>Path:</strong> $Q,W,C$</span>
+          <span><strong>Intensive:</strong> $P,T,\rho,s,C$</span>
+          <span><strong>Extensive:</strong> $m,V,U,n,S$</span>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- CARD 2: Cv, Cp, Mayer's Relation & Atomicity Table                -->
+      <!-- ================================================================= -->
+      <section class="bento-card rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-1.5 mb-1.5">
+            <span class="font-extrabold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider text-[11px]">
+              2. $C_V, C_P$, Mayer's Relation &amp; Atomicity
+            </span>
+            <span class="text-[10px] font-mono text-slate-400">Pg 7, 9, 10</span>
+          </div>
+
+          <div class="space-y-0.5 mb-2">
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Const Vol ($C_V$)</span>
+              <span class="math-val" onclick="revealOne(this)">$C_V = \left(\frac{Q}{n\Delta T}\right)_V = \frac{f}{2}R = \frac{R}{\gamma - 1}$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Const Press ($C_P$)</span>
+              <span class="math-val" onclick="revealOne(this)">$C_P = \left(\frac{Q}{n\Delta T}\right)_P = \left(\frac{f}{2} + 1\right)R = \frac{\gamma R}{\gamma - 1}$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Mayer's &amp; $\gamma$</span>
+              <span class="math-val font-bold text-emerald-600 dark:text-emerald-400" onclick="revealOne(this)">$C_P - C_V = R \quad\Big|\quad \gamma = \frac{C_P}{C_V} = 1 + \frac{2}{f}$</span>
+            </div>
+          </div>
+
+          <!-- Compact Atomicity Table -->
+          <table class="w-full text-left border-collapse text-[11px] rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+            <thead>
+              <tr class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200">
+                <th class="p-1.5 border-b border-slate-200 dark:border-slate-700">Gas Type</th>
+                <th class="p-1.5 border-b border-slate-200 dark:border-slate-700 text-center">$f$</th>
+                <th class="p-1.5 border-b border-slate-200 dark:border-slate-700 text-center">$C_V$</th>
+                <th class="p-1.5 border-b border-slate-200 dark:border-slate-700 text-center">$C_P$</th>
+                <th class="p-1.5 border-b border-slate-200 dark:border-slate-700 text-center">$\gamma = 1+\frac{2}{f}$</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+              <tr>
+                <td class="p-1.5 font-semibold">Monoatomic</td>
+                <td class="p-1.5 text-center font-mono">3</td>
+                <td class="p-1.5 text-center math-val" onclick="revealOne(this)">$\frac{3}{2}R$</td>
+                <td class="p-1.5 text-center math-val" onclick="revealOne(this)">$\frac{5}{2}R$</td>
+                <td class="p-1.5 text-center font-bold text-indigo-500 math-val" onclick="revealOne(this)">$\frac{5}{3} \approx 1.67$</td>
+              </tr>
+              <tr>
+                <td class="p-1.5 font-semibold">Diatomic / Lin.</td>
+                <td class="p-1.5 text-center font-mono">5</td>
+                <td class="p-1.5 text-center math-val" onclick="revealOne(this)">$\frac{5}{2}R$</td>
+                <td class="p-1.5 text-center math-val" onclick="revealOne(this)">$\frac{7}{2}R$</td>
+                <td class="p-1.5 text-center font-bold text-indigo-500 math-val" onclick="revealOne(this)">$\frac{7}{5} = 1.4$</td>
+              </tr>
+              <tr>
+                <td class="p-1.5 font-semibold">Non-linear Poly</td>
+                <td class="p-1.5 text-center font-mono">6</td>
+                <td class="p-1.5 text-center math-val" onclick="revealOne(this)">$3R$</td>
+                <td class="p-1.5 text-center math-val" onclick="revealOne(this)">$4R$</td>
+                <td class="p-1.5 text-center font-bold text-indigo-500 math-val" onclick="revealOne(this)">$\frac{4}{3} \approx 1.33$</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-2 pt-1.5 border-t border-slate-200 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400 flex justify-between">
+          <span>Isobaric Work Fraction: <strong class="math-val text-slate-700 dark:text-slate-200" onclick="revealOne(this)">$\frac{W}{Q} = \frac{R}{C_P} = 1 - \frac{1}{\gamma}$</strong></span>
+          <span>$\frac{\Delta U}{Q} = \frac{1}{\gamma}$</span>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- CARD 3: Graph Slopes & Key Process Relations                      -->
+      <!-- ================================================================= -->
+      <section class="bento-card rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-1.5 mb-1.5">
+            <span class="font-extrabold text-amber-600 dark:text-amber-400 uppercase tracking-wider text-[11px]">
+              3. Graph Slopes &amp; Curve Rules
+            </span>
+            <span class="text-[10px] font-mono text-slate-400">Pg 4–13</span>
+          </div>
+
+          <div class="space-y-0.5">
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Isotherm Slope</span>
+              <span class="math-val text-sky-500 font-semibold" onclick="revealOne(this)">$\left(\frac{dP}{dV}\right)_T = -\frac{P}{V} \;\; (\text{Rect. Hyperbola})$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Adiabat Slope</span>
+              <span class="math-val text-rose-500 font-semibold" onclick="revealOne(this)">$\left(\frac{dP}{dV}\right)_Q = -\gamma\frac{P}{V} = \gamma \times \text{Slope}_{\text{iso}}$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Steepness</span>
+              <span class="math-val" onclick="revealOne(this)">$|\text{Slope}_{\text{adia}}| > |\text{Slope}_{\text{iso}}| \;\;(\text{Adiabat steeper})$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Adiabatic $T$</span>
+              <span class="math-val" onclick="revealOne(this)">$\text{Exp }(W>0)\to\text{Cools} \;|\; \text{Comp }(W<0)\to\text{Heats}$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Isochoric $P\text{-}T$</span>
+              <span class="math-val" onclick="revealOne(this)">$P = \left(\frac{nR}{V}\right)T \implies \text{Slope } m = \frac{nR}{V} \propto \frac{1}{V}$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Isobaric $V\text{-}T$</span>
+              <span class="math-val" onclick="revealOne(this)">$V = \left(\frac{nR}{P}\right)T \implies \text{Slope } m = \frac{nR}{P} \propto \frac{1}{P}$</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mini Visual Diagram: Isotherm vs Adiabat + CW/ACW -->
+        <div class="mt-2 pt-1.5 border-t border-slate-200 dark:border-slate-800 grid grid-cols-2 gap-2 items-center">
+          <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/60 p-1.5 rounded-lg">
+            <svg viewBox="0 0 90 58" class="w-16 h-11 shrink-0">
+              <line x1="10" y1="50" x2="84" y2="50" stroke="#94a3b8" stroke-width="1.5"/>
+              <line x1="10" y1="50" x2="10" y2="6" stroke="#94a3b8" stroke-width="1.5"/>
+              <!-- Isotherm (less steep) -->
+              <path d="M 18 14 Q 36 34 80 40" fill="none" stroke="#0ea5e9" stroke-width="2"/>
+              <!-- Adiabat (steeper) -->
+              <path d="M 18 14 Q 28 42 62 48" fill="none" stroke="#f43f5e" stroke-width="2"/>
+              <circle cx="18" cy="14" r="2.5" fill="#eab308"/>
+              <text x="62" y="34" fill="#0ea5e9" font-size="8" font-weight="bold">Iso</text>
+              <text x="42" y="47" fill="#f43f5e" font-size="8" font-weight="bold">Adia</text>
+            </svg>
+            <div class="text-[10px] leading-tight text-slate-600 dark:text-slate-300">
+              <div><span class="text-sky-500 font-bold">Iso:</span> $PV=c$</div>
+              <div><span class="text-rose-500 font-bold">Adia:</span> $PV^\gamma=c$</div>
+              <div class="text-[9px] text-slate-400">Farther $T_2 > T_1$</div>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 dark:bg-slate-800/60 p-1.5 rounded-lg text-[10px] leading-tight space-y-1">
+            <div class="flex justify-between">
+              <span class="text-emerald-500 font-bold">↻ CW Cycle:</span>
+              <span class="font-mono font-bold">$W = +A$</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-rose-500 font-bold">↺ ACW Cycle:</span>
+              <span class="font-mono font-bold">$W = -A$</span>
+            </div>
+            <div class="text-[9px] text-slate-400">$m_1 < m_2 \implies V_1 > V_2$ (or $P_1 > P_2$)</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- CARD 4: Polytropic Process (PV^x = const) & Exponent (x) Finder   -->
+      <!-- ================================================================= -->
+      <section class="bento-card rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-1.5 mb-1.5">
+            <span class="font-extrabold text-purple-600 dark:text-purple-400 uppercase tracking-wider text-[11px]">
+              4. Polytropic ($PV^x = c$) &amp; Exponent ($x$)
+            </span>
+            <span class="text-[10px] font-mono text-slate-400">Pg 12</span>
+          </div>
+
+          <div class="space-y-0.5 mb-2">
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">State Eqs</span>
+              <span class="math-val" onclick="revealOne(this)">$PV^x = c \iff TV^{x-1} = c \iff P^{1-x}T^x = c$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Work Done</span>
+              <span class="math-val" onclick="revealOne(this)">$W = \frac{P_fV_f - P_iV_i}{1 - x} = \frac{P_iV_i - P_fV_f}{x - 1} = \frac{nR\Delta T}{1 - x}$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Molar Heat $C$</span>
+              <span class="math-val font-bold text-purple-600 dark:text-purple-400" onclick="revealOne(this)">$C = C_V + \frac{R}{1 - x} = \frac{R}{\gamma - 1} + \frac{R}{1 - x}$</span>
+            </div>
+          </div>
+
+          <!-- Compact Polytropic Exponent (x) Finder Grid -->
+          <div class="bg-slate-50 dark:bg-slate-800/70 rounded-lg p-2 border border-slate-200 dark:border-slate-800">
+            <div class="text-[10px] font-bold text-purple-500 uppercase mb-1">Polytropic Exponent ($x$) Cheatsheet:</div>
+            <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-[10px]">
+              <div class="flex justify-between"><span>Isobaric ($P=c$):</span><strong class="math-val" onclick="revealOne(this)">$x = 0$</strong></div>
+              <div class="flex justify-between"><span>Isothermal ($PV=c$):</span><strong class="math-val" onclick="revealOne(this)">$x = 1$</strong></div>
+              <div class="flex justify-between"><span>Adiabatic ($PV^\gamma=c$):</span><strong class="math-val" onclick="revealOne(this)">$x = \gamma$</strong></div>
+              <div class="flex justify-between"><span>Isochoric ($V=c$):</span><strong class="math-val" onclick="revealOne(this)">$x = \pm\infty$</strong></div>
+              <div class="flex justify-between"><span>$P/V^2 = c$:</span><strong class="math-val" onclick="revealOne(this)">$x = -2$</strong></div>
+              <div class="flex justify-between"><span>$P\sqrt{V} = c$:</span><strong class="math-val" onclick="revealOne(this)">$x = 1/2$</strong></div>
+              <div class="flex justify-between"><span>$P^2V^3 = c$:</span><strong class="math-val" onclick="revealOne(this)">$x = 3/2$</strong></div>
+              <div class="flex justify-between"><span>$PT = c \; (P^2V=c)$:</span><strong class="math-val" onclick="revealOne(this)">$x = 1/2$</strong></div>
+              <div class="flex justify-between col-span-2 border-t border-slate-200 dark:border-slate-700 pt-0.5">
+                <span>$V^2T^3 = c \implies V^2(PV)^3 = c \implies P^3V^5 = c$:</span>
+                <strong class="math-val text-purple-500" onclick="revealOne(this)">$x = 5/3$</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- CARD 5: MASTER PROCESS FORMULA MATRIX (FULL-WIDTH TABLE, PAGE 14)   -->
+    <!-- =================================================================== -->
+    <section class="bento-card rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 shadow-sm">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-1.5 mb-2">
+        <div class="flex items-center gap-2">
+          <span class="font-extrabold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider text-[11px]">
+            5. Master 5-Process Formula Matrix (Complete Page 14 Summary)
+          </span>
+        </div>
+        <span class="text-[10px] font-mono text-slate-400">Click any formula in Recall Mode to test yourself</span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-[11px] border border-slate-200 dark:border-slate-800">
+          <thead>
+            <tr class="bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-100">
+              <th class="p-2 border border-slate-200 dark:border-slate-700 font-bold w-28">Parameter</th>
+              <th class="p-2 border border-slate-200 dark:border-slate-700 font-bold text-sky-500">Isothermal ($T = c$)</th>
+              <th class="p-2 border border-slate-200 dark:border-slate-700 font-bold text-emerald-500">Isochoric ($V = c$)</th>
+              <th class="p-2 border border-slate-200 dark:border-slate-700 font-bold text-amber-500">Isobaric ($P = c$)</th>
+              <th class="p-2 border border-slate-200 dark:border-slate-700 font-bold text-rose-500">Adiabatic ($Q = 0$)</th>
+              <th class="p-2 border border-slate-200 dark:border-slate-700 font-bold text-purple-500">Polytropic ($PV^x = c$)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+            <tr>
+              <td class="p-1.5 px-2 font-bold bg-slate-50/60 dark:bg-slate-900">1. State Eq.</td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$PV = \text{const}$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$P/T = \text{const}$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$V/T = \text{const}$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$PV^\gamma = c, \; TV^{\gamma-1} = c, \; P^{1-\gamma}T^\gamma = c$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$PV^x = c, \; TV^{x-1} = c, \; P^{1-x}T^x = c$</span></td>
+            </tr>
+            <tr>
+              <td class="p-1.5 px-2 font-bold bg-slate-50/60 dark:bg-slate-900">2. Diff. Gas Eq.</td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$\Delta(PV) = 0$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$V\Delta P = nR\Delta T$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$P\Delta V = nR\Delta T$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$\Delta(PV) = nR\Delta T$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$\Delta(PV) = nR\Delta T$</span></td>
+            </tr>
+            <tr>
+              <td class="p-1.5 px-2 font-bold bg-slate-50/60 dark:bg-slate-900">3. FLOT Form</td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$\Delta Q = W \;\; (\Delta U = 0)$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$\Delta Q = \Delta U \;\; (W = 0)$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$\Delta Q = \Delta U + W$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$\Delta U = -W \;\; (\Delta Q = 0)$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$\Delta Q = \Delta U + W$</span></td>
+            </tr>
+            <tr>
+              <td class="p-1.5 px-2 font-bold bg-slate-50/60 dark:bg-slate-900">4. Work ($W$)</td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$nRT\ln\left(\frac{V_f}{V_i}\right) = nRT\ln\left(\frac{P_i}{P_f}\right) = 2.303nRT\log\left(\frac{V_f}{V_i}\right)$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val font-bold" onclick="revealOne(this)">$W = 0$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$P(V_f - V_i) = nR(T_f - T_i)$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$\frac{P_iV_i - P_fV_f}{\gamma - 1} = \frac{nR(T_i - T_f)}{\gamma - 1}$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$\frac{P_iV_i - P_fV_f}{x - 1} = \frac{nR(T_i - T_f)}{x - 1}$</span></td>
+            </tr>
+            <tr>
+              <td class="p-1.5 px-2 font-bold bg-slate-50/60 dark:bg-slate-900">5. $\Delta U$</td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val font-bold" onclick="revealOne(this)">$\Delta U = 0$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$nC_V\Delta T = \frac{f}{2}V(P_f - P_i)$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$nC_V\Delta T = \frac{f}{2}P(V_f - V_i)$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$nC_V\Delta T = \frac{f}{2}(P_fV_f - P_iV_i)$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$nC_V\Delta T = \frac{f}{2}(P_fV_f - P_iV_i)$</span></td>
+            </tr>
+            <tr>
+              <td class="p-1.5 px-2 font-bold bg-slate-50/60 dark:bg-slate-900">6. Heat ($\Delta Q$)</td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$nRT\ln\left(\frac{V_f}{V_i}\right) = nRT\ln\left(\frac{P_i}{P_f}\right)$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$nC_V\Delta T = \frac{f}{2}V(P_f - P_i)$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$nC_P\Delta T = \left(\frac{f}{2}+1\right)P(V_f - V_i)$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val font-bold" onclick="revealOne(this)">$\Delta Q = 0$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$nC\Delta T$</span></td>
+            </tr>
+            <tr>
+              <td class="p-1.5 px-2 font-bold bg-slate-50/60 dark:bg-slate-900">7. Molar $C$</td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val font-bold text-sky-500" onclick="revealOne(this)">$\infty \text{ (Infinite)}$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$C_V = \frac{f}{2}R = \frac{R}{\gamma-1}$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$C_P = \left(\frac{f}{2}+1\right)R = \frac{\gamma R}{\gamma-1}$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val font-bold text-rose-500" onclick="revealOne(this)">$0 \text{ (Zero)}$</span></td>
+              <td class="p-1.5 px-2 border-l border-slate-200 dark:border-slate-800"><span class="math-val" onclick="revealOne(this)">$C_V + \frac{R}{1-x} = \frac{R}{\gamma-1} + \frac{R}{1-x}$</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- BOTTOM BENTO ROW: CARDS 6, 7, 8 -->
+    <div class="bento-grid grid grid-cols-1 lg:grid-cols-3 gap-3">
+
+      <!-- ================================================================= -->
+      <!-- CARD 6: Mixture of Non-Reacting Gases                             -->
+      <!-- ================================================================= -->
+      <section class="bento-card rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-1.5 mb-1.5">
+            <span class="font-extrabold text-sky-600 dark:text-sky-400 uppercase tracking-wider text-[11px]">
+              6. Mixture of Gases $(n_1, M_{01}, \gamma_1) + (n_2, M_{02}, \gamma_2)$
+            </span>
+            <span class="text-[10px] font-mono text-slate-400">Pg 15</span>
+          </div>
+
+          <div class="space-y-0.5">
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Effective $M_0$</span>
+              <span class="math-val" onclick="revealOne(this)">$(M_0)_{\text{eff}} = \frac{\text{Total Mass}}{\text{Total Moles}} = \frac{n_1 M_{01} + n_2 M_{02}}{n_1 + n_2}$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Energy Balance</span>
+              <span class="math-val" onclick="revealOne(this)">$\Delta U = \Delta U_1 + \Delta U_2 \implies (n_1+n_2)(C_V)_{\text{eff}} = n_1 C_{V1} + n_2 C_{V2}$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">$(C_V)_{\text{eff}}$ &amp; $(C_P)_{\text{eff}}$</span>
+              <span class="math-val" onclick="revealOne(this)">$(C_V)_{\text{eff}} = \frac{n_1 C_{V1} + n_2 C_{V2}}{n_1 + n_2} \;\;|\;\; (C_P)_{\text{eff}} = \frac{n_1 C_{P1} + n_2 C_{P2}}{n_1 + n_2}$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Effective $\gamma_{\text{eff}}$</span>
+              <span class="math-val font-bold text-sky-600 dark:text-sky-400" onclick="revealOne(this)">$\frac{n_1 + n_2}{\gamma_{\text{eff}} - 1} = \frac{n_1}{\gamma_1 - 1} + \frac{n_2}{\gamma_2 - 1} \quad \left(\gamma_{\text{eff}} = \frac{(C_P)_{\text{eff}}}{(C_V)_{\text{eff}}}\right)$</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-2 pt-1.5 border-t border-slate-200 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400 flex justify-between">
+          <span>Also: $(C_P)_{\text{eff}} = (C_V)_{\text{eff}} + R$</span>
+          <span>Effective DOF: $f_{\text{eff}} = \frac{n_1 f_1 + n_2 f_2}{n_1 + n_2}$</span>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- CARD 7: Entropy (ΔS), 2nd Law & 3rd Law                           -->
+      <!-- ================================================================= -->
+      <section class="bento-card rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-1.5 mb-1.5">
+            <span class="font-extrabold text-teal-600 dark:text-teal-400 uppercase tracking-wider text-[11px]">
+              7. Entropy ($\Delta S$), Phase Change &amp; 2nd / 3rd Law
+            </span>
+            <span class="text-[10px] font-mono text-slate-400">Pg 15–16</span>
+          </div>
+
+          <div class="space-y-0.5">
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Entropy ($S$)</span>
+              <span class="math-val font-bold text-teal-600 dark:text-teal-400" onclick="revealOne(this)">$dS = \frac{dQ}{T} \quad (\text{SI: J/K, State Fn, } dS \propto dQ, \frac{1}{T})$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Melting ($T_m$)</span>
+              <span class="math-val" onclick="revealOne(this)">$\Delta S_{\text{melt}} = \int \frac{dQ}{T_m} = \frac{Q}{T_m} = \frac{+mL_f}{T_m}$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Boiling ($T_B$)</span>
+              <span class="math-val" onclick="revealOne(this)">$\Delta S_{\text{boil}} = \int \frac{dQ}{T_B} = \frac{Q}{T_B} = \frac{+mL_v}{T_B}$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Heating Solid</span>
+              <span class="math-val font-semibold" onclick="revealOne(this)">$\Delta S = \int_{T_i}^{T_f} \frac{ms\,dT}{T} = ms\ln\left(\frac{T_f}{T_i}\right)$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">2nd Law (SLOT)</span>
+              <span class="math-val" onclick="revealOne(this)">$\Delta S_{\text{isolated}} \ge 0 \implies \Delta S_{\text{universe}} \ge 0 \;\;(\text{Not conserved})$</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-2 pt-1.5 border-t border-slate-200 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400 flex justify-between">
+          <span><strong>Randomness ($1\text{ kg}$):</strong> $S_{\text{steam}} \gg S_{\text{water}} > S_{\text{ice}}$</span>
+          <span><strong>3rd Law:</strong> Gives absolute $S$</span>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- CARD 8: Heat Engine, Carnot Cycle & Refrigerator / Heat Pump      -->
+      <!-- ================================================================= -->
+      <section class="bento-card rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-1.5 mb-1.5">
+            <span class="font-extrabold text-pink-600 dark:text-pink-400 uppercase tracking-wider text-[11px]">
+              8. Heat Engine, Carnot &amp; Refrigerator / HP
+            </span>
+            <span class="text-[10px] font-mono text-slate-400">Pg 17–20</span>
+          </div>
+
+          <div class="space-y-0.5">
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Heat Engine ($\eta$)</span>
+              <span class="math-val" onclick="revealOne(this)">$W = Q_H - Q_L \;\;|\;\; \eta = \frac{W}{Q_H} = \frac{Q_H - Q_L}{Q_H} = 1 - \frac{Q_L}{Q_H}$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Carnot Cycle</span>
+              <span class="math-val" onclick="revealOne(this)">$\frac{V_B}{V_A} = \frac{V_C}{V_D} \implies \frac{Q_H}{Q_L} = \frac{T_H}{T_L} \quad (\text{2 Iso + 2 Adia})$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Carnot $\eta_{\max}$</span>
+              <span class="math-val font-bold text-pink-600 dark:text-pink-400" onclick="revealOne(this)">$\eta_{\text{Carnot}} = 1 - \frac{T_L}{T_H} \quad (0 \le \eta < 1, \;\; \eta_{\text{any}} \le \eta_{\text{Carnot}})$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Refrigerator</span>
+              <span class="math-val" onclick="revealOne(this)">$(\text{COP})_{\text{Ref}} = \frac{Q_L}{W} = \frac{Q_L}{Q_H - Q_L} = \frac{T_L}{T_H - T_L} \;\; (>0)$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">Heat Pump</span>
+              <span class="math-val" onclick="revealOne(this)">$(\text{COP})_{\text{HP}} = \frac{Q_H}{W} = \frac{Q_H}{Q_H - Q_L} = \frac{T_H}{T_H - T_L} \;\; (>1)$</span>
+            </div>
+            <div class="f-row">
+              <span class="font-semibold text-slate-500 dark:text-slate-400">COP Relation</span>
+              <span class="math-val font-bold text-indigo-600 dark:text-indigo-400" onclick="revealOne(this)">$(\text{COP})_{\text{HP}} = 1 + (\text{COP})_{\text{Ref}}$</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-2 pt-1.5 border-t border-slate-200 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400 flex flex-wrap justify-between gap-1">
+          <span><strong>Kelvin-Planck:</strong> $Q_L=0$ ($\eta=100\%$) impossible</span>
+          <span><strong>Clausius:</strong> $W=0$ ($\text{COP}=\infty$) impossible</span>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (typeof renderMathInElement !== 'undefined') {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false
+        });
+      }
+    });
+
+    function toggleTheme() {
+      document.documentElement.classList.toggle('dark');
+    }
+
+    function toggleRecallMode() {
+      const active = document.body.classList.toggle('recall-mode');
+      const btn = document.getElementById('recallBtn');
+      const resetBtn = document.getElementById('resetRecallBtn');
+
+      if (active) {
+        btn.className = 'px-2.5 py-1 rounded-lg font-semibold bg-indigo-600 text-white shadow-sm transition flex items-center gap-1';
+        resetBtn.classList.remove('hidden');
+        resetReveals();
+      } else {
+        btn.className = 'px-2.5 py-1 rounded-lg font-semibold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-indigo-500 transition flex items-center gap-1';
+        resetBtn.classList.add('hidden');
+      }
+    }
+
+    function revealOne(el) {
+      if (!document.body.classList.contains('recall-mode')) return;
+      el.classList.toggle('revealed');
+    }
+
+    function resetReveals() {
+      document.querySelectorAll('.math-val.revealed').forEach(el => el.classList.remove('revealed'));
+    }
+
+    function toggleCompactMode() {
+      const active = document.body.classList.toggle('ultra-compact');
+      const btn = document.getElementById('compactBtn');
+      if (active) {
+        btn.className = 'px-2.5 py-1 rounded-lg font-semibold bg-indigo-600 text-white shadow-sm transition flex items-center gap-1';
+      } else {
+        btn.className = 'px-2.5 py-1 rounded-lg font-semibold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-indigo-500 transition flex items-center gap-1';
+      }
+    }
+
+    function filterSheet(query) {
+      const q = query.trim().toLowerCase();
+      document.getElementById('clearSearchBtn').classList.toggle('hidden', q.length === 0);
+
+      document.querySelectorAll('.bento-card').forEach(card => {
+        const text = card.innerText.toLowerCase();
+        card.classList.toggle('hidden', q !== '' && !text.includes(q));
+      });
+    }
+
+    function clearSearch() {
+      const input = document.getElementById('searchInput');
+      input.value = '';
+      filterSheet('');
+    }
+  </script>
+</body>
+</html>
